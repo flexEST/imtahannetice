@@ -54,6 +54,7 @@
             color: red;
             margin-top: 5px;
             display: none;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -64,8 +65,9 @@
     <div class="form-container">
         <div class="form-group">
             <label for="work-number">İş nömrəsini daxil edin</label>
-            <input type="text" id="work-number" placeholder="Növbəti">
-            <div id="error-message" class="error-message">Düzgün iş nömrəsi qeyd edin</div>
+            <input type="text" id="work-number" placeholder="Növbəti" 
+                   oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+            <div id="error-message" class="error-message"></div>
         </div>
         <button onclick="checkWorkNumber()">Nəticələri göstər</button>
     </div>
@@ -75,27 +77,40 @@
             const workNumber = document.getElementById('work-number').value.trim();
             const errorMessage = document.getElementById('error-message');
             
-            // Check if input is empty or not a number
-            if (!workNumber || isNaN(workNumber)) {
+            // Validation
+            if (!workNumber) {
+                errorMessage.textContent = "İş nömrəsi daxil edin";
                 errorMessage.style.display = 'block';
-                return; // Stop the function if invalid
+                return;
             }
             
-            errorMessage.style.display = 'none'; // Hide error if valid
+            if (workNumber.length <= 7) {
+                errorMessage.textContent = "İş nömrəsi ən az 8 rəqəmli olmalıdır";
+                errorMessage.style.display = 'block';
+                return;
+            }
             
+            // Get last digit
+            const lastDigit = workNumber.slice(-1);
+            
+            // Redirect logic
             if (workNumber === '19207368') {
                 window.location.href = 'https://sites.google.com/view/imtahanneticeler/19207368';
-            } else if (workNumber === '19283297') {
+            } 
+            else if (workNumber === '19283297') {
                 window.location.href = 'https://sites.google.com/view/imtahanneticeler/19283297';
-            } else {
+            }
+            else if (/^[1-9]$/.test(lastDigit)) {
+                window.location.href = `https://sites.google.com/view/imtahanneticeler/site${lastDigit}`;
+            }
+            else {
                 window.location.href = 'https://sites.google.com/view/imtahanneticeler/netice';
             }
         }
         
+        // Enter key support
         document.getElementById('work-number').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                checkWorkNumber();
-            }
+            if (e.key === 'Enter') checkWorkNumber();
         });
     </script>
 </body>
